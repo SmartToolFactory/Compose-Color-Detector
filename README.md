@@ -7,6 +7,13 @@ and color Palettes and profiles
 using [Palette API](https://developer.android.com/training/material/palette-colors)
 and [Compose ImageCropper library](https://github.com/SmartToolFactory/Compose-Image-Cropper)
 
+
+</br>
+
+| Screen | Image | 
+| ----------|-----------| 
+| <img src="./screenshot/screen_detector.gif"/>| <img src="./screenshot/image_detector.gif"/> |
+
 ## Gradle Setup
 
 To get a Git project into your build:
@@ -30,12 +37,6 @@ dependencies {
     implementation 'com.github.SmartToolFactory:Compose-Color-Detector:<version>'
 }
 ```
-
-</br>
-
-| Screen | Image | 
-| ----------|-----------| 
-| <img src="./screenshot/screen_detector.gif"/>| <img src="./screenshot/image_detector.gif"/> |
 
 ## ScreenColorDetector
 
