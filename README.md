@@ -1,9 +1,35 @@
 # Compose Color Detector
 
+[![](https://jitpack.io/v/SmartToolFactory/Compose-Color-Detector.svg)](https://jitpack.io/#SmartToolFactory/Compose-Color-Detector)
+
 Detect colors with name, hex code, RGB, HSL from image or your screen after taking it's screenshot
 and color Palettes and profiles
 using [Palette API](https://developer.android.com/training/material/palette-colors)
 and [Compose ImageCropper library](https://github.com/SmartToolFactory/Compose-Image-Cropper)
+
+## Gradle Setup
+
+To get a Git project into your build:
+
+* Step 1. Add the JitPack repository to your build file Add it in your root build.gradle at the end
+  of repositories:
+
+```
+allprojects {
+  repositories {
+      ...
+      maven { url 'https://jitpack.io' }
+  }
+}
+```
+
+* Step 2. Add the dependency
+
+```
+dependencies {
+    implementation 'com.github.SmartToolFactory:Compose-Color-Detector:<version>'
+}
+```
 
 </br>
 
@@ -15,9 +41,8 @@ and [Compose ImageCropper library](https://github.com/SmartToolFactory/Compose-I
 
 `ScreenColorDetector` uses `ImageWithThumbnail`
 from [Compose ImageCropper library](https://github.com/SmartToolFactory/Compose-Image-Cropper)
-
-) to display image in bounds and get bounds and show thumbnail on left or right side of the
-screenshot when **enabled**
+to display image in bounds and get bounds and show thumbnail on left or right side of the screenshot
+when **enabled**
 
 ```kotlin
 @Composable
