@@ -4,8 +4,12 @@ Detect colors with name, hex code, RGB, HSL from image or your screen after taki
 and color Palettes and profiles
 using [Palette API](https://developer.android.com/training/material/palette-colors)
 and [Compose ImageCropper library](https://github.com/SmartToolFactory/Compose-Image-Cropper)
-| Screen | Image | | ----------|-----------| | <img src="./screenshot/screen_detector.gif"/>
-| <img src="./screenshot/image_detector.gif"/> |
+
+</br>
+
+| Screen | Image | 
+| ----------|-----------| 
+| <img src="./screenshot/screen_detector.gif"/>| <img src="./screenshot/image_detector.gif"/> |
 
 ## ScreenColorDetector
 
