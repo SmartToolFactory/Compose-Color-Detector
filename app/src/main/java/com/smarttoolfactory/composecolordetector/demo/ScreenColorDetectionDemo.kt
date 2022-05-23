@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.smarttoolfactory.colordetector.ColorData
 import com.smarttoolfactory.colordetector.ScreenColorDetector
+import com.smarttoolfactory.colordetector.ScreenRefreshPolicy
 
 @SuppressLint("UnsafeOptInUsageError")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -44,6 +45,7 @@ fun ScreenColorDetectionDemo() {
 @Composable
 private fun ScreenColorDetection(paddingValues: PaddingValues, enabled: Boolean) {
 
+    // These values are to not used, just to show that output can be used
     var currentColor by remember { mutableStateOf(Color.Unspecified) }
     var colorName by remember { mutableStateOf("") }
 
@@ -55,6 +57,8 @@ private fun ScreenColorDetection(paddingValues: PaddingValues, enabled: Boolean)
 
         ScreenColorDetector(
             enabled = enabled,
+            delayBeforeCapture = 0L,
+            screenRefreshPolicy = ScreenRefreshPolicy.OnEnable,
             content = {
                 Column(
 

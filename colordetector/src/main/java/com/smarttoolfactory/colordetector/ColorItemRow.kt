@@ -3,7 +3,7 @@ package com.smarttoolfactory.colordetector
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -28,13 +28,13 @@ internal fun ColorItemRow(
             .clickable {
                 onClick(colorData)
             }
-            .padding(top =4.dp, bottom = 4.dp, start = 12.dp, end = 12.dp),
+            .padding(top = 4.dp, bottom = 4.dp, start = 12.dp, end = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
             modifier = Modifier
                 .size(38.dp)
-                .background(colorData.color, shape = RoundedCornerShape(50))
+                .background(colorData.color, shape = CircleShape)
         )
 
         Spacer(modifier = Modifier.width(20.dp))

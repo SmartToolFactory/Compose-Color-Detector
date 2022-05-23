@@ -1,5 +1,6 @@
 package com.smarttoolfactory.colordetector
 
+import androidx.annotation.IntRange
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,6 +19,7 @@ import com.smarttoolfactory.colordetector.util.calculateColorInPixel
 import com.smarttoolfactory.extendedcolors.parser.ColorNameParser
 import com.smarttoolfactory.extendedcolors.parser.rememberColorParser
 import com.smarttoolfactory.imagecropper.ImageWithThumbnail
+import com.smarttoolfactory.imagecropper.ThumbnailPosition
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
@@ -31,6 +33,7 @@ import kotlinx.coroutines.flow.mapLatest
  * @param alignment Optional alignment parameter used to place the ImageBitmap in the
  * given bounds defined by the width and height
  * @param thumbnailSize size of the thumbnail that displays touch position with zoom
+ * @param thumbnailZoom zoom scale between 100% and 500%
  * @param onColorChange callback to notify that user moved and picked a color
  */
 @Composable
@@ -41,6 +44,7 @@ fun ImageColorDetector(
     alignment: Alignment = Alignment.Center,
     colorNameParser: ColorNameParser = rememberColorParser(),
     thumbnailSize: Dp = 70.dp,
+    @IntRange(from = 100, to = 500) thumbnailZoom: Int = 200,
     onColorChange: (ColorData) -> Unit
 ) {
 
@@ -74,6 +78,7 @@ fun ImageColorDetector(
         contentScale = contentScale,
         alignment = alignment,
         thumbnailSize = thumbnailSize,
+        thumbnailZoom = thumbnailZoom,
         onThumbnailCenterChange = {
             center = it
         },

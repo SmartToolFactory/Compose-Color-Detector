@@ -23,6 +23,16 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 
+/**
+ * Composable that creates color lists [Palette.Swatch] using **Palette API**
+ * @param imageBitmap is the image that colors are generated from
+ * @param selectedIndex whether only primary swatches or every swatch that is generated
+ * should be displayed
+ * @param colorNameParser parses color name from [Color]
+ * @param maximumColorCount maximum number of [Palette.Swatch]es that should be generated
+ * from [imageBitmap]. Maximum number might not be achieved based on image color composition
+ * @param onColorChange callback to notify that user moved and picked a color
+ */
 @SuppressLint("MutableCollectionMutableState")
 @Composable
 fun ImageColorPalette(

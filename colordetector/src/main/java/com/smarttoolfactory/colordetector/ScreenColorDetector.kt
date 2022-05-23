@@ -1,6 +1,8 @@
 package com.smarttoolfactory.colordetector
 
 import android.graphics.Bitmap
+import androidx.annotation.IntRange
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
@@ -21,19 +23,31 @@ import androidx.compose.ui.unit.dp
 import com.smarttoolfactory.colordetector.ScreenRefreshPolicy.*
 import com.smarttoolfactory.colordetector.util.calculateColorInPixel
 import com.smarttoolfactory.extendedcolors.parser.rememberColorParser
+import com.smarttoolfactory.gesture.pointerMotionEvents
 import com.smarttoolfactory.imagecropper.ImageWithThumbnail
 import com.smarttoolfactory.screenshot.ImageResult
 import com.smarttoolfactory.screenshot.ScreenshotBox
 import com.smarttoolfactory.screenshot.rememberScreenshotState
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.launch
 
 /**
  * A Composable that detect color at pixel that user touches when [enabled].
  * @param enabled when enabled detect color at user's point of touch
  * @param thumbnailSize size of the thumbnail that displays touch position with zoom
+ * @param thumbnailZoom zoom scale between 100% and 500%
+ * @param screenRefreshPolicy how to set or refresh screenshot of the screen. By default
+ * screenshot is taken when [enabled] flag is set to true after delay specified
+ * with [delayBeforeCapture].
+ * If [OnDown] or [OnUp] is selected screenshot is taken when [enabled] is false and when
+ * first pointer is down or last pointer is
+ * up after delay specified with [delayBeforeCapture]
+ * @param delayBeforeCapture how many milliseconds should be waited before taking screenshot
+ * of the screen
  * @param content is screen/Composable is displayed to user to get color from. [ScreenshotBox]
  * gets [Bitmap] from screen when users first down and stores it.
  * @param onColorChange callback to notify that user moved and picked a color
@@ -43,10 +57,14 @@ fun ScreenColorDetector(
     modifier: Modifier = Modifier,
     enabled: Boolean = false,
     thumbnailSize: Dp = 80.dp,
-    screenRefreshPolicy: ScreenRefreshPolicy = ScreenRefreshPolicy.OnEnable,
+    @IntRange(from = 100, to = 500) thumbnailZoom: Int = 200,
+    screenRefreshPolicy: ScreenRefreshPolicy = OnEnable,
     content: @Composable () -> Unit,
+    delayBeforeCapture: Long = 0L,
     onColorChange: (ColorData) -> Unit
 ) {
+    val coroutineScope = rememberCoroutineScope()
+
     var offset by remember {
         mutableStateOf(Offset.Unspecified)
     }
@@ -62,8 +80,11 @@ fun ScreenColorDetector(
     val screenshotState = rememberScreenshotState()
 
     LaunchedEffect(key1 = enabled) {
-        if (enabled) {
-            screenshotState.capture()
+        if (enabled && screenRefreshPolicy == OnEnable) {
+            launch {
+                delay(delayBeforeCapture)
+                screenshotState.capture()
+            }
         } else {
             screenshotState.imageState.value = ImageResult.Initial
             offset = Offset.Unspecified
@@ -92,7 +113,24 @@ fun ScreenColorDetector(
     Box {
 
         ScreenshotBox(
-            modifier = modifier,
+            modifier = modifier.pointerMotionEvents(Unit,
+                onDown = {
+                    if (screenRefreshPolicy == OnDown && !enabled) {
+                        coroutineScope.launch {
+                            delay(delayBeforeCapture)
+                            screenshotState.capture()
+                        }
+                    }
+                },
+                onUp = {
+                    if (screenRefreshPolicy == OnUp && !enabled) {
+                        coroutineScope.launch {
+                            delay(delayBeforeCapture)
+                            screenshotState.capture()
+                        }
+                    }
+                }
+            ),
             screenshotState = screenshotState
         ) {
             content()
@@ -113,6 +151,7 @@ fun ScreenColorDetector(
                     enabled = enabled,
                     bitmap = bitmap,
                     thumbnailSize = thumbnailSize,
+                    thumbnailZoom = thumbnailZoom,
                     colorData = ColorData(color, colorName),
                     center = center,
                     offset = offset,
@@ -162,6 +201,7 @@ private fun ScreenColorDetectorImpl(
     enabled: Boolean,
     bitmap: Bitmap,
     thumbnailSize: Dp,
+    thumbnailZoom: Int,
     colorData: ColorData,
     offset: Offset,
     center: Offset,
@@ -179,6 +219,7 @@ private fun ScreenColorDetectorImpl(
         contentDescription = "Image Color Detector",
         contentScale = ContentScale.FillBounds,
         thumbnailSize = thumbnailSize,
+        thumbnailZoom = thumbnailZoom,
         onThumbnailCenterChange = {
             onThumbnailCenterChange(it)
         },

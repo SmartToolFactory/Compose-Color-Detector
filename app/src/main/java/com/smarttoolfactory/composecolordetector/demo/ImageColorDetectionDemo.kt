@@ -6,7 +6,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -27,6 +26,7 @@ import com.smarttoolfactory.composecolordetector.ImageSelectionButton
 import com.smarttoolfactory.composecolordetector.R
 import com.smarttoolfactory.extendedcolors.parser.ColorNameParser
 import com.smarttoolfactory.extendedcolors.parser.rememberColorParser
+import kotlinx.coroutines.launch
 
 @Composable
 fun ImageColorDetectionDemo() {
@@ -41,6 +41,8 @@ fun ImageColorDetectionDemo() {
     val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
         bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)
     )
+
+    val coroutineScope = rememberCoroutineScope()
 
     var index by remember { mutableStateOf(0) }
     val colorNameParser = rememberColorParser()
@@ -72,6 +74,18 @@ fun ImageColorDetectionDemo() {
                 imageBitmap,
                 colorNameParser,
                 onIndexChange = {
+                    val bottomSheetState = bottomSheetScaffoldState.bottomSheetState
+                    val currentIndex = index
+                    coroutineScope.launch {
+                        if (bottomSheetState.isExpanded) {
+                            if ( currentIndex == it){
+                                bottomSheetState.collapse()
+                            }
+                        } else {
+                            bottomSheetState.expand()
+                        }
+                    }
+
                     index = it
                 },
                 onColorChange = { colorData: ColorData ->
