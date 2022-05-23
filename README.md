@@ -7,8 +7,7 @@ and color Palettes and profiles
 using [Palette API](https://developer.android.com/training/material/palette-colors)
 and [Compose ImageCropper library](https://github.com/SmartToolFactory/Compose-Image-Cropper)
 
-
-</br>
+<br>
 
 | Screen | Image | 
 | ----------|-----------| 
