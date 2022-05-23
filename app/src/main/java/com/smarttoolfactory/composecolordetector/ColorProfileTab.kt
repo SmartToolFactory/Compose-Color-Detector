@@ -1,6 +1,7 @@
 package com.smarttoolfactory.composecolordetector
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -15,11 +16,14 @@ fun ColorProfileTab(
     onTabChange: (Int) -> Unit
 ) {
 
-    val list = listOf("Primary", "Available")
+    val list = listOf("Palette", "Available")
 
-    TabRow(selectedTabIndex = selectedIndex,
-//        containerColor = MaterialTheme.colorScheme.primary,
-        modifier = modifier.clip(RoundedCornerShape(26.dp)),
+    TabRow(
+        selectedTabIndex = selectedIndex,
+        containerColor = MaterialTheme.colorScheme.primaryContainer,
+        modifier = modifier
+            .clip(RoundedCornerShape(26.dp))
+            .border(1.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(26.dp)),
         divider = {},
         indicator = { tabPositions: List<TabPosition> ->
 //            TabRowDefaults.Indicator(
@@ -36,8 +40,7 @@ fun ColorProfileTab(
                     .background(MaterialTheme.colorScheme.primary)
                 else Modifier
                     .clip(RoundedCornerShape(26.dp))
-//                    .background(MaterialTheme.colorScheme.primary)
-                ,
+                    .background(MaterialTheme.colorScheme.primaryContainer),
                 selected = selected,
                 onClick = {
                     onTabChange(index)
@@ -46,7 +49,7 @@ fun ColorProfileTab(
                     Text(
                         text = text,
                         color = if (selected) MaterialTheme.colorScheme.onPrimary
-                        else MaterialTheme.colorScheme.primary
+                        else MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 }
             )

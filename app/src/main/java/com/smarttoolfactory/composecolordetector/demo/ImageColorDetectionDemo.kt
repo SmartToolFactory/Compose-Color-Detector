@@ -25,9 +25,9 @@ import com.smarttoolfactory.composecolordetector.ColorProfileTab
 import com.smarttoolfactory.composecolordetector.ContentScaleSelectionMenu
 import com.smarttoolfactory.composecolordetector.ImageSelectionButton
 import com.smarttoolfactory.composecolordetector.R
+import com.smarttoolfactory.extendedcolors.parser.ColorNameParser
 import com.smarttoolfactory.extendedcolors.parser.rememberColorParser
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ImageColorDetectionDemo() {
 
@@ -67,75 +67,108 @@ fun ImageColorDetectionDemo() {
         floatingActionButtonPosition = FabPosition.End,
         sheetGesturesEnabled = true,
         sheetContent = {
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(max = 340.dp)
-                    .background(MaterialTheme.colorScheme.primaryContainer)
-                    .padding(top = 10.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                ColorProfileTab(
-                    modifier = Modifier.width(300.dp),
-                    selectedIndex = index,
-                    onTabChange = {
-                        index = it
-                    }
-                )
-                Spacer(modifier = Modifier.height(10.dp))
-                ImageColorPalette(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    imageBitmap = imageBitmap,
-                    colorNameParser = colorNameParser,
-                    selectedIndex = index,
-                    onColorChange = {
-                        currentColor = it.color
-                        colorName = it.name
-                    }
-                )
-            }
+            SheetContent(
+                index,
+                imageBitmap,
+                colorNameParser,
+                onIndexChange = {
+                    index = it
+                },
+                onColorChange = { colorData: ColorData ->
+                    currentColor = colorData.color
+                    colorName = colorData.name
+                }
+            )
         },
         drawerElevation = 16.dp,
         drawerGesturesEnabled = true,
         // This is the height in collapsed state
         sheetPeekHeight = 70.dp
     ) {
-
-        val modifier = Modifier
-            .background(Color.LightGray)
-            .fillMaxWidth()
-            .aspectRatio(4 / 3f)
-
-        var contentScale by remember { mutableStateOf(ContentScale.Fit) }
-
-        Column(modifier = Modifier.fillMaxSize()) {
-
-            ContentScaleSelectionMenu(contentScale) {
-                contentScale = it
-            }
-            ImageColorDetector(
-                modifier = modifier,
-                contentScale = contentScale,
-                colorNameParser = colorNameParser,
-                imageBitmap = imageBitmap,
-                thumbnailSize = 70.dp,
-                onColorChange = {
-                    currentColor = it.color
-                    colorName = it.name
-                }
-            )
-            Spacer(modifier = Modifier.height(10.dp))
-            if (currentColor != Color.Unspecified) {
-                ColorDisplayWithClipboard(
-                    colorData = ColorData(
-                        color = currentColor,
-                        name = colorName
-                    )
-                )
-            }
+        MainContent(
+            colorNameParser,
+            imageBitmap,
+            currentColor,
+            colorName
+        ) { colorData: ColorData ->
+            currentColor = colorData.color
+            colorName = colorData.name
         }
     }
 
+}
+
+@Composable
+private fun SheetContent(
+    index: Int,
+    imageBitmap: ImageBitmap,
+    colorNameParser: ColorNameParser,
+    onIndexChange: (Int) -> Unit,
+    onColorChange: (ColorData) -> Unit
+) {
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(max = 340.dp)
+            .background(MaterialTheme.colorScheme.primaryContainer)
+            .padding(top = 10.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        ColorProfileTab(
+            modifier = Modifier.width(300.dp),
+            selectedIndex = index,
+            onTabChange = onIndexChange
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+        ImageColorPalette(
+            modifier = Modifier
+                .fillMaxWidth(),
+            imageBitmap = imageBitmap,
+            colorNameParser = colorNameParser,
+            selectedIndex = index,
+            onColorChange = onColorChange
+        )
+    }
+}
+
+@Composable
+private fun MainContent(
+    colorNameParser: ColorNameParser,
+    imageBitmap: ImageBitmap,
+    currentColor: Color,
+    colorName: String,
+    onColorChange: (ColorData) -> Unit
+) {
+
+    val modifier = Modifier
+        .background(Color.LightGray)
+        .fillMaxWidth()
+        .aspectRatio(4 / 3f)
+
+    var contentScale by remember { mutableStateOf(ContentScale.Fit) }
+
+    Column(modifier = Modifier.fillMaxSize()) {
+
+        ContentScaleSelectionMenu(contentScale) {
+            contentScale = it
+        }
+        ImageColorDetector(
+            modifier = modifier,
+            contentScale = contentScale,
+            colorNameParser = colorNameParser,
+            imageBitmap = imageBitmap,
+            thumbnailSize = 70.dp,
+            onColorChange = onColorChange
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+        if (currentColor != Color.Unspecified) {
+            ColorDisplayWithClipboard(
+                colorData = ColorData(
+                    color = currentColor,
+                    name = colorName
+                )
+            )
+        }
+    }
 }

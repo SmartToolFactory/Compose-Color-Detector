@@ -38,7 +38,6 @@ fun ColorDisplayWithClipboard(
 
     var expanded by remember { mutableStateOf(false) }
 
-
     val hexText = colorData.hexText
     Column(
         modifier = modifier

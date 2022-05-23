@@ -18,6 +18,7 @@ internal fun ColorItemRow(
     contentColor: Color = Color.Unspecified,
     containerColor: Color = Color.Unspecified,
     profile: String = "",
+    populationPercent: String,
     colorData: ColorData,
     onClick: (ColorData) -> Unit,
 ) {
@@ -27,13 +28,13 @@ internal fun ColorItemRow(
             .clickable {
                 onClick(colorData)
             }
-            .padding(4.dp),
+            .padding(top =4.dp, bottom = 4.dp, start = 12.dp, end = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
             modifier = Modifier
-                .size(40.dp)
-                .background(colorData.color, shape = RoundedCornerShape(25))
+                .size(38.dp)
+                .background(colorData.color, shape = RoundedCornerShape(50))
         )
 
         Spacer(modifier = Modifier.width(20.dp))
@@ -62,5 +63,12 @@ internal fun ColorItemRow(
                 color = contentColor
             )
         }
+
+        Spacer(modifier = Modifier.weight(1f))
+        Text(
+            text = populationPercent,
+            fontSize = 16.sp,
+            color = contentColor
+        )
     }
 }

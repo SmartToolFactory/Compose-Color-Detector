@@ -17,11 +17,11 @@ import androidx.compose.ui.unit.dp
 import androidx.palette.graphics.Palette
 import com.smarttoolfactory.extendedcolors.parser.ColorNameParser
 import com.smarttoolfactory.extendedcolors.parser.rememberColorParser
+import com.smarttoolfactory.extendedcolors.util.fractionToIntPercent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 
 @SuppressLint("MutableCollectionMutableState")
 @Composable
@@ -33,12 +33,12 @@ fun ImageColorPalette(
     maximumColorCount: Int = 16,
     onColorChange: (ColorData) -> Unit
 ) {
-    var colorList by remember {
-        mutableStateOf(listOf<ColorData>())
+    val paletteData = remember {
+        mutableStateListOf<PaletteData>()
     }
 
     var colorProfileMap by remember {
-        mutableStateOf(LinkedHashMap<String, ColorData>())
+        mutableStateOf(LinkedHashMap<String, PaletteData>())
     }
 
     LaunchedEffect(key1 = imageBitmap) {
@@ -50,16 +50,33 @@ fun ImageColorPalette(
                 .maximumColorCount(maximumColorCount)
                 .generate()
 
-            val list = mutableListOf<ColorData>()
+            paletteData.clear()
 
-            val colorMap = linkedMapOf<String, ColorData>()
+            val numberOfPixels: Float = palette.swatches.sumOf {
+                it.population
+            }.toFloat()
+
+            palette.swatches.forEach { paletteSwatch: Palette.Swatch? ->
+                paletteSwatch?.let { swatch: Palette.Swatch ->
+                    val color = Color(swatch.rgb)
+                    val name = colorNameParser.parseColorName(color)
+                    val colorData = ColorData(color, name)
+                    val percent: Float = swatch.population / numberOfPixels
+                    paletteData.add(PaletteData(colorData = colorData, percent))
+                }
+            }
+
+            val colorMap = linkedMapOf<String, PaletteData>()
 
             palette.lightVibrantSwatch?.rgb.let {
                 if (it != null) {
                     val color = Color(it)
                     val name = colorNameParser.parseColorName(color)
                     val colorData = ColorData(color, name)
-                    colorMap["Light Vibrant"] = colorData
+
+                    val percent: Float =
+                        (palette.lightVibrantSwatch?.population ?: 0) / numberOfPixels
+                    colorMap["Light Vibrant"] = PaletteData(colorData = colorData, percent)
                 }
             }
 
@@ -68,7 +85,10 @@ fun ImageColorPalette(
                     val color = Color(it)
                     val name = colorNameParser.parseColorName(color)
                     val colorData = ColorData(color, name)
-                    colorMap["Vibrant"] = colorData
+
+                    val percent: Float =
+                        (palette.vibrantSwatch?.population ?: 0) / numberOfPixels
+                    colorMap["Vibrant"] = PaletteData(colorData = colorData, percent)
                 }
             }
 
@@ -77,7 +97,10 @@ fun ImageColorPalette(
                     val color = Color(it)
                     val name = colorNameParser.parseColorName(color)
                     val colorData = ColorData(color, name)
-                    colorMap["Light Vibrant"] = colorData
+
+                    val percent: Float =
+                        (palette.darkVibrantSwatch?.population ?: 0) / numberOfPixels
+                    colorMap["Light Vibrant"] = PaletteData(colorData = colorData, percent)
                 }
             }
 
@@ -86,7 +109,10 @@ fun ImageColorPalette(
                     val color = Color(it)
                     val name = colorNameParser.parseColorName(color)
                     val colorData = ColorData(color, name)
-                    colorMap["Light Muted"] = colorData
+
+                    val percent: Float =
+                        (palette.lightMutedSwatch?.population ?: 0) / numberOfPixels
+                    colorMap["Light Muted"] = PaletteData(colorData = colorData, percent)
                 }
             }
 
@@ -95,7 +121,10 @@ fun ImageColorPalette(
                     val color = Color(it)
                     val name = colorNameParser.parseColorName(color)
                     val colorData = ColorData(color, name)
-                    colorMap["Muted"] = colorData
+
+                    val percent: Float =
+                        (palette.mutedSwatch?.population ?: 0) / numberOfPixels
+                    colorMap["Muted"] = PaletteData(colorData = colorData, percent)
                 }
             }
 
@@ -104,27 +133,16 @@ fun ImageColorPalette(
                     val color = Color(it)
                     val name = colorNameParser.parseColorName(color)
                     val colorData = ColorData(color, name)
-                    colorMap["Dark Muted"] = colorData
+
+                    val percent: Float =
+                        (palette.darkMutedSwatch?.population ?: 0) / numberOfPixels
+                    colorMap["Dark Muted"] = PaletteData(colorData = colorData, percent)
                 }
             }
 
             colorProfileMap = colorMap
-
-            palette.swatches.forEach { swatch: Palette.Swatch? ->
-                swatch?.let {
-                    val color = Color(it.rgb)
-                    val name = colorNameParser.parseColorName(color)
-                    val colorData = ColorData(color, name)
-                    list.add(colorData)
-                }
-            }
-
-            list.toList()
         }
             .flowOn(Dispatchers.Default)
-            .onEach {
-                colorList = it
-            }
             .launchIn(this)
     }
 
@@ -132,7 +150,7 @@ fun ImageColorPalette(
         modifier = modifier,
         index = selectedIndex,
         colorProfileMap = colorProfileMap,
-        colorList = colorList,
+        paletteDataList = paletteData,
         onColorChange = onColorChange
     )
 }
@@ -141,29 +159,35 @@ fun ImageColorPalette(
 private fun ColorProfileList(
     modifier: Modifier,
     index: Int = 0,
-    colorProfileMap: Map<String, ColorData>,
-    colorList: List<ColorData>,
+    colorProfileMap: Map<String, PaletteData>,
+    paletteDataList: List<PaletteData>,
     onColorChange: (ColorData) -> Unit
 ) {
     LazyColumn(
         modifier = modifier
             .fillMaxSize(),
-        contentPadding = PaddingValues(4.dp),
+        contentPadding = PaddingValues(8.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
+
+
         if (index == 0) {
             colorProfileMap.forEach {
+
                 val profile = it.key
-                val colorData = ColorData(it.value.color, it.value.name)
+                val paletteData = it.value
+                val percent = paletteData.percent.fractionToIntPercent()
+                val colorData = paletteData.colorData
 
                 item {
                     Column {
                         ColorItemRow(
                             modifier = Modifier
-                                .shadow(1.dp, RoundedCornerShape(10.dp))
+                                .shadow(.5.dp, RoundedCornerShape(50))
                                 .background(MaterialTheme.colors.background)
                                 .fillMaxWidth(),
                             profile = "($profile) ",
+                            populationPercent = "$percent%",
                             colorData = colorData,
                             onClick = onColorChange
                         )
@@ -171,13 +195,18 @@ private fun ColorProfileList(
                 }
             }
         } else {
-            items(colorList) { colorData: ColorData ->
+            items(paletteDataList) { paletteData: PaletteData ->
+
+                val percent = paletteData.percent.fractionToIntPercent()
+                val colorData = paletteData.colorData
+
                 ColorItemRow(
                     modifier = Modifier
-                        .shadow(1.dp, RoundedCornerShape(10.dp))
+                        .shadow(.5.dp, RoundedCornerShape(50))
                         .background(MaterialTheme.colors.background)
                         .fillMaxWidth(),
                     colorData = colorData,
+                    populationPercent = "$percent%",
                     onClick = onColorChange
                 )
             }
@@ -185,3 +214,4 @@ private fun ColorProfileList(
     }
 }
 
+private data class PaletteData(val colorData: ColorData, val percent: Float)
