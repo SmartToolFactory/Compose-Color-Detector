@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -49,6 +50,9 @@ private fun ScreenColorDetection(paddingValues: PaddingValues, enabled: Boolean)
     var currentColor by remember { mutableStateOf(Color.Unspecified) }
     var colorName by remember { mutableStateOf("") }
 
+    // Sample dialog
+    var showDialog by remember { mutableStateOf(false) }
+
     Column(
         modifier = Modifier
             .padding(paddingValues)
@@ -84,7 +88,7 @@ private fun ScreenColorDetection(paddingValues: PaddingValues, enabled: Boolean)
                             Text(text = "ElevatedButton")
                         }
 
-                        FilledTonalButton(onClick = { /*TODO*/ }) {
+                        FilledTonalButton(onClick = { showDialog = !showDialog }) {
                             Text("FilledTonalButton")
                         }
                     }
@@ -106,6 +110,12 @@ private fun ScreenColorDetection(paddingValues: PaddingValues, enabled: Boolean)
             colorName = colorData.name
         }
 
+    }
+
+    if (showDialog) {
+        M3Dialog {
+            showDialog = false
+        }
     }
 }
 
@@ -134,4 +144,37 @@ private fun HorizontalChipList(modifier: Modifier = Modifier) {
             )
         }
     }
+}
+
+@Composable
+fun M3Dialog(onDismissRequest: () -> Unit) {
+
+    AlertDialog(
+        onDismissRequest = onDismissRequest,
+        icon = {
+            Icon(imageVector = Icons.Default.Settings, contentDescription = null)
+        },
+        title = {
+            Text(text = "Settings")
+        },
+        text = {
+            Column {
+                Text("Sample Text to display Material Design3 dialog.")
+            }
+        },
+        dismissButton = {
+            Button(
+                onClick = onDismissRequest
+            ) {
+                Text(text = "Dismiss")
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = onDismissRequest
+            ) {
+                Text(text = "Confirm")
+            }
+        }
+    )
 }

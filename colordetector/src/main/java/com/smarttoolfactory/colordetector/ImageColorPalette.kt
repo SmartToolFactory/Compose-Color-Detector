@@ -1,6 +1,5 @@
 package com.smarttoolfactory.colordetector
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -33,7 +32,6 @@ import kotlinx.coroutines.flow.map
  * from [imageBitmap]. Maximum number might not be achieved based on image color composition
  * @param onColorChange callback to notify that user moved and picked a color
  */
-@SuppressLint("MutableCollectionMutableState")
 @Composable
 fun ImageColorPalette(
     modifier: Modifier = Modifier,
@@ -48,7 +46,7 @@ fun ImageColorPalette(
     }
 
     var colorProfileMap by remember {
-        mutableStateOf(LinkedHashMap<String, PaletteData>())
+        mutableStateOf<Map<String, PaletteData>>(LinkedHashMap())
     }
 
     LaunchedEffect(key1 = imageBitmap) {

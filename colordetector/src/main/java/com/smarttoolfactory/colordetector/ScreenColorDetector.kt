@@ -2,7 +2,7 @@ package com.smarttoolfactory.colordetector
 
 import android.graphics.Bitmap
 import androidx.annotation.IntRange
-import androidx.compose.foundation.border
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
@@ -42,14 +42,13 @@ import kotlinx.coroutines.launch
  * @param thumbnailZoom zoom scale between 100% and 500%
  * @param screenRefreshPolicy how to set or refresh screenshot of the screen. By default
  * screenshot is taken when [enabled] flag is set to true after delay specified
- * with [delayBeforeCapture].
+ * with [delayBeforeCapture]
  * If [OnDown] or [OnUp] is selected screenshot is taken when [enabled] is false and when
  * first pointer is down or last pointer is
  * up after delay specified with [delayBeforeCapture]
  * @param delayBeforeCapture how many milliseconds should be waited before taking screenshot
  * of the screen
- * @param content is screen/Composable is displayed to user to get color from. [ScreenshotBox]
- * gets [Bitmap] from screen when users first down and stores it.
+ * @param content is screen/Composable is displayed to user to get color from.
  * @param onColorChange callback to notify that user moved and picked a color
  */
 @Composable
@@ -81,10 +80,8 @@ fun ScreenColorDetector(
 
     LaunchedEffect(key1 = enabled) {
         if (enabled && screenRefreshPolicy == OnEnable) {
-            launch {
-                delay(delayBeforeCapture)
-                screenshotState.capture()
-            }
+            delay(delayBeforeCapture)
+            screenshotState.capture()
         } else {
             screenshotState.imageState.value = ImageResult.Initial
             offset = Offset.Unspecified
@@ -216,7 +213,7 @@ private fun ScreenColorDetectorImpl(
     ImageWithThumbnail(
         imageBitmap = imageBitmap,
         modifier = modifier,
-        contentDescription = "Image Color Detector",
+        contentDescription = "Screen Color Detector",
         contentScale = ContentScale.FillBounds,
         thumbnailSize = thumbnailSize,
         thumbnailZoom = thumbnailZoom,
