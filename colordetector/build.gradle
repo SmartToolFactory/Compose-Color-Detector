@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    compileSdk 31
+    compileSdk 32
 
     defaultConfig {
         minSdk 21
-        targetSdk 31
+        targetSdk 32
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -44,13 +44,13 @@ android {
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.core:core-ktx:1.8.0'
     implementation 'androidx.palette:palette:1.0.0'
 
-    implementation 'com.github.SmartToolFactory:Compose-Extended-Gestures:1.2.0'
+    implementation 'com.github.SmartToolFactory:Compose-Extended-Gestures:2.0.0'
     implementation 'com.github.SmartToolFactory:Compose-Screenshot:1.0.3'
     implementation 'com.github.SmartToolFactory:Compose-Extended-Colors:1.0.0-alpha07'
-    implementation 'com.github.SmartToolFactory:Compose-Image-Cropper:1.0.0-alpha08'
+    implementation 'com.github.SmartToolFactory:Compose-Image:1.0.3'
 
     // Jetpack Compose
     implementation "androidx.compose.ui:ui:$compose_version"

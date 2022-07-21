@@ -5,7 +5,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.IntRect
 
 /**
+ * Calculate color of a pixel in a [Bitmap] that is drawn to a Composable with
+ * [width] and [height]. [startImageX]
  *
+ * @param offsetX x coordinate in Composable from top left corner
+ * @param offsetY y coordinate in Composable from top left corner
+ * @param startImageX x coordinate of top left position of image
+ * @param startImageY y coordinate of top left position of image
+ * @param rect contains coordinates of original bitmap to be used as. Full bitmap has
+ * rect with (0,0) top left and size of [bitmap]
+ * @param width of the Composable that draws this [bitmap]
+ * @param height of the Composable that draws this [bitmap]
+ * @param bitmap of picture/image that to detect color of a specific pixel in
  */
 fun calculateColorInPixel(
     offsetX: Float,

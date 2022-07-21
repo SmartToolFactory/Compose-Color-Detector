@@ -2,7 +2,6 @@ package com.smarttoolfactory.colordetector
 
 import android.graphics.Bitmap
 import androidx.annotation.IntRange
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
@@ -16,15 +15,13 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.IntSize
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.*
 import com.smarttoolfactory.colordetector.ScreenRefreshPolicy.*
 import com.smarttoolfactory.colordetector.util.calculateColorInPixel
 import com.smarttoolfactory.extendedcolors.parser.rememberColorParser
 import com.smarttoolfactory.gesture.pointerMotionEvents
-import com.smarttoolfactory.imagecropper.ImageWithThumbnail
+import com.smarttoolfactory.image.ImageWithThumbnail
+import com.smarttoolfactory.image.rememberThumbnailState
 import com.smarttoolfactory.screenshot.ImageResult
 import com.smarttoolfactory.screenshot.ScreenshotBox
 import com.smarttoolfactory.screenshot.rememberScreenshotState
@@ -215,8 +212,10 @@ private fun ScreenColorDetectorImpl(
         modifier = modifier,
         contentDescription = "Screen Color Detector",
         contentScale = ContentScale.FillBounds,
-        thumbnailSize = thumbnailSize,
-        thumbnailZoom = thumbnailZoom,
+        thumbnailState = rememberThumbnailState(
+            size = DpSize(thumbnailSize, thumbnailSize),
+            thumbnailZoom = thumbnailZoom
+        ),
         onThumbnailCenterChange = {
             onThumbnailCenterChange(it)
         },

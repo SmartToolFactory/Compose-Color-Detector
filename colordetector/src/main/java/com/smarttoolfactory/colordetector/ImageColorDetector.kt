@@ -14,12 +14,13 @@ import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.smarttoolfactory.colordetector.util.calculateColorInPixel
 import com.smarttoolfactory.extendedcolors.parser.ColorNameParser
 import com.smarttoolfactory.extendedcolors.parser.rememberColorParser
-import com.smarttoolfactory.imagecropper.ImageWithThumbnail
-import com.smarttoolfactory.imagecropper.ThumbnailPosition
+import com.smarttoolfactory.image.ImageWithThumbnail
+import com.smarttoolfactory.image.rememberThumbnailState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
@@ -77,8 +78,10 @@ fun ImageColorDetector(
         contentDescription = "Image Color Detector",
         contentScale = contentScale,
         alignment = alignment,
-        thumbnailSize = thumbnailSize,
-        thumbnailZoom = thumbnailZoom,
+        thumbnailState = rememberThumbnailState(
+            size = DpSize(thumbnailSize, thumbnailSize),
+            thumbnailZoom = thumbnailZoom,
+        ),
         onThumbnailCenterChange = {
             center = it
         },

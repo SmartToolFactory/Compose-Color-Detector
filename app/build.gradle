@@ -49,12 +49,12 @@ android {
 
 dependencies {
 
+    implementation project(':colordetector')
     implementation 'com.github.SmartToolFactory:Compose-Extended-Colors:1.0.0-alpha07'
-    implementation 'com.github.SmartToolFactory:Compose-Color-Detector:1.0.0'
 
     implementation 'androidx.core:core-ktx:1.8.0'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.1'
-    implementation 'androidx.activity:activity-compose:1.4.0'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.0'
+    implementation 'androidx.activity:activity-compose:1.5.0'
 
     implementation("com.google.modernstorage:modernstorage-photopicker:1.0.0-alpha06")
 
@@ -65,7 +65,7 @@ dependencies {
     implementation "androidx.compose.material3:material3:1.0.0-alpha13"
 
     // Coil
-    implementation("io.coil-kt:coil-compose:2.0.0")
+    implementation("io.coil-kt:coil-compose:2.1.0")
 
     def accompanist_version = "0.24.9-beta"
     // Accompanist

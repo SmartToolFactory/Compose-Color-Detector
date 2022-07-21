@@ -40,7 +40,7 @@ dependencies {
 ## ScreenColorDetector
 
 `ScreenColorDetector` uses `ImageWithThumbnail`
-from [Compose ImageCropper library](https://github.com/SmartToolFactory/Compose-Image-Cropper)
+from [Compose Image library](https://github.com/SmartToolFactory/Compose-Image)
 to display image in bounds and get bounds and show thumbnail on left or right side of the screenshot
 when **enabled**
 
